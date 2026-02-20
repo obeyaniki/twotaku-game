@@ -193,9 +193,18 @@ window.showOnlineRanking = async function(){
 window.setNameToOnline = function(name){
  setPlayerName(name);
 };
+window.addEventListener("load", ()=>{
+ let name = localStorage.getItem("playerName");
+ if(!name){
+   name = prompt("名前を入力してください（ランキングに表示されます）");
+   if(!name || name.trim()==="") name="名無し";
+   setPlayerName(name);
+ }
+});
 </script>
 </body>
 </html>
+
 
 
 

@@ -162,6 +162,29 @@ function switchScreen(id){
  document.getElementById(id).classList.add("active");
 }
 </script>
+<script type="module">
+import { setPlayerName,getPlayerName,sendScore,loadRanking } from "./main.js";
 
+window.setName = function(){
+ const name = prompt("名前を入力");
+ if(name) setPlayerName(name);
+};
+
+window.uploadScore = async function(score){
+ await sendScore(score);
+};
+
+window.showOnlineRanking = async function(){
+ const list = await loadRanking();
+ const ol = document.getElementById("ranking");
+ ol.innerHTML="";
+ list.forEach(r=>{
+  const li=document.createElement("li");
+  li.textContent = r.name+" - 1/"+(2n**BigInt(r.score));
+  ol.appendChild(li);
+ });
+};
+</script>
 </body>
 </html>
+

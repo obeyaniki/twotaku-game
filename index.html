@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>1兆分の1を目指せ</title>
+<style>
+body{margin:0;background:black;color:white;text-align:center;font-family:sans-serif}
+.screen{display:none;min-height:100vh;justify-content:center;align-items:center;flex-direction:column}
+.active{display:flex}
+button{font-size:22px;margin:10px;padding:15px 30px}
+#best{color:cyan}
+.admin{color:red}
+.secret{color:lime}
+</style>
+</head>
+<body>
+
+<!-- タイトル -->
+
+<div id="title" class="screen active">
+<h1>1兆分の1を目指せ</h1>
+<button onclick="start()">ゲーム開始</button>
+<button onclick="openRanking()">ランキング</button>
+<button onclick="openAdmin()">？？？</button>
+</div>
+
+<!-- ゲーム -->
+
+<div id="game" class="screen">
+<h2 id="counter">現在：1/1</h2>
+<h3 id="best">あなたの最高記録：1/1</h3>
+
+<h3 id="answerView"></h3>
+
+<button onclick="choose(1)">選択肢1</button> <button onclick="choose(2)">選択肢2</button>
+
+<p id="msg"></p>
+<button onclick="backTitle()">戻る</button>
+</div>
+
+<!-- ランキング -->
+
+<div id="rank" class="screen">
+<h1>ランキング</h1>
+<ol id="ranking"></ol>
+<button onclick="backTitle()">戻る</button>
+</div>
+
+<!-- 管理者 -->
+
+<div id="admin" class="screen">
+<h2 class="admin">管理者認証</h2>
+<input id="adminInput" placeholder="ACCESS CODE">
+<button onclick="unlock()">認証</button>
+<p id="adminMsg"></p>
+<button onclick="backTitle()">戻る</button>
+</div>
+
+<script>
+let correct=Math.random()<0.5?1:2;
+let streak=0;
+let myBest=Number(localStorage.getItem("myBest")||0);
+let adminMode=false;
+
+// ★ かっこいいコード
+const SECRET_KEY="OMEGA-NULL-7729-X";
+const ADMIN_CODE="BLACK-HOLE-ROOT-ACCESS";
+
+function probText(n){
+ if(n>60) return "1/約"+Math.pow(2,60)+"以上";
+ return "1/"+Math.pow(2,n);
+}
+
+function updateDisplay(){
+ counter.textContent="現在："+probText(streak);
+ best.textContent="あなたの最高記録："+probText(myBest);
+
+ if(adminMode){
+   answerView.textContent="正解は → "+correct;
+   answerView.className="secret";
+ }else{
+   answerView.textContent="";
+ }
+}
+
+function saveScore(score){
+ let list=JSON.parse(localStorage.getItem("ranking")||"[]");
+ list.push(score);
+ list.sort((a,b)=>b-a);
+ list=list.slice(0,10);
+ localStorage.setItem("ranking",JSON.stringify(list));
+}
+
+function showRanking(){
+ let list=JSON.parse(localStorage.getItem("ranking")||"[]");
+ ranking.innerHTML="";
+ list.forEach(s=>{
+  const li=document.createElement("li");
+  li.textContent=probText(s);
+  ranking.appendChild(li);
+ });
+}
+
+function choose(n){
+ if(n===correct){
+  streak++;
+  msg.textContent="正解";
+ }else{
+  msg.textContent="失敗";
+
+  if(streak>myBest){
+   myBest=streak;
+   localStorage.setItem("myBest",myBest);
+  }
+
+  saveScore(streak);
+  streak=0;
+ }
+
+ correct=Math.random()<0.5?1:2;
+ updateDisplay();
+}
+
+function start(){
+ switchScreen("game");
+ updateDisplay();
+}
+
+function openRanking(){
+ showRanking();
+ switchScreen("rank");
+}
+
+function openAdmin(){
+ switchScreen("admin");
+}
+
+function unlock(){
+ const val=document.getElementById("adminInput").value;
+
+ if(val===ADMIN_CODE){
+   adminMode=true;
+   adminMsg.textContent="ACCESS GRANTED";
+   adminMsg.className="admin";
+ }else if(val===SECRET_KEY){
+   adminMsg.textContent="SECRET KEY ACCEPTED";
+   adminMsg.className="secret";
+ }else{
+   adminMsg.textContent="ACCESS DENIED";
+ }
+
+ updateDisplay();
+}
+
+function backTitle(){
+ switchScreen("title");
+}
+
+function switchScreen(id){
+ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+}
+</script>
+
+</body>
+</html>

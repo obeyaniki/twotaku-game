@@ -1,32 +1,30 @@
-const _k=[66,76,65,67,75,45,79,77,69,71,65];
-const _s=[88,45,55,50,57,57];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-function _decode(a){
-return a.map(v=>String.fromCharCode(v)).join("");
+const firebaseConfig = {
+  apiKey: "AIzaSyD5ZKGOIaUEj4g07xIo1A-SlCImQAY-Mf0",
+  authDomain: "game-ranking-622a1.firebaseapp.com",
+  projectId: "game-ranking-622a1",
+  storageBucket: "game-ranking-622a1.firebasestorage.app",
+  messagingSenderId: "59664573948",
+  appId: "1:59664573948:web:a7becbbeadf05be8b1be79"
+};
+
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+
+// 保存
+export async function saveRanking(name, score){
+await addDoc(collection(db,"ranking"),{
+name:name,
+score:score,
+time:Date.now()
+});
 }
 
-function _hash(str){
-let h=0;
-for(let i=0;i<str.length;i++){
-h=(h<<5)-h+str.charCodeAt(i);
-h|=0;
-}
-return h;
-}
-
-window.activateGodMode=function(input){
-const key=_decode(_k);
-const seed=_decode(_s);
-
-if(_hash(input)===_hash(key+seed)){
-window.__Ω=true;
-}
-}
-
-window.nextAnswer=function(){
-if(window.__Ω){
-const t=Math.floor(Date.now()/1000);
-return (t%2)+1;
-}
-return Math.random()<0.5?1:2;
+// 読み込み
+export async function loadRanking(){
+const q=query(collection(db,"ranking"),orderBy("score","desc"),limit(10));
+const snap=await getDocs(q);
+return snap.docs.map(d=>d.data());
 }

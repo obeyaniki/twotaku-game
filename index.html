@@ -164,17 +164,24 @@ function switchScreen(id){
 }
 </script>
 <script type="module">
-import { setPlayerName,getPlayerName,sendScore,loadRanking } from "./main.js";
+import { setPlayerName,sendScore,loadRanking } from "./main.js";
 
-window.setName = function(){
- const name = prompt("名前を入力");
- if(name) setPlayerName(name);
-};
+/* 初回名前登録 */
+window.addEventListener("load", ()=>{
+ let name = localStorage.getItem("playerName");
+ if(!name){
+   name = prompt("名前を入力してください（ランキングに表示されます）");
+   if(!name || name.trim()==="") name="名無し";
+   setPlayerName(name);
+ }
+});
 
+/* スコア送信 */
 window.uploadScore = async function(score){
  await sendScore(score);
 };
 
+/* ランキング表示 */
 window.showOnlineRanking = async function(){
  const list = await loadRanking();
  const ol = document.getElementById("ranking");
@@ -185,26 +192,14 @@ window.showOnlineRanking = async function(){
   ol.appendChild(li);
  });
 };
-
-window.setNameToOnline = function(name){
- setPlayerName(name);
-};
-
-/* 初回アクセス時に必ず名前を登録 */
-window.addEventListener("load", ()=>{
- let name = localStorage.getItem("playerName");
- if(!name){
-   name = prompt("名前を入力してください（ランキングに表示されます）");
-   if(!name || name.trim()==="") name="名無し";
-   setPlayerName(name);
- }
-});
+</script>
 </script>
 </body>
 </html>
 </script>
 </body>
 </html>
+
 
 
 

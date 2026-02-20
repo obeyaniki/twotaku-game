@@ -124,6 +124,10 @@ function choose(n){
 }
 
 function start(){
+ const name = prompt("名前を入力してください");
+ if(name){
+   setNameToOnline(name);
+ }
  switchScreen("game");
  updateDisplay();
 }
@@ -185,9 +189,14 @@ window.showOnlineRanking = async function(){
   ol.appendChild(li);
  });
 };
+
+window.setNameToOnline = function(name){
+ setPlayerName(name);
+};
 </script>
 </body>
 </html>
+
 
 
 

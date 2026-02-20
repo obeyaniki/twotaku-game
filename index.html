@@ -189,6 +189,8 @@ window.showOnlineRanking = async function(){
 window.setNameToOnline = function(name){
  setPlayerName(name);
 };
+
+/* 初回アクセス時に必ず名前を登録 */
 window.addEventListener("load", ()=>{
  let name = localStorage.getItem("playerName");
  if(!name){
@@ -200,6 +202,10 @@ window.addEventListener("load", ()=>{
 </script>
 </body>
 </html>
+</script>
+</body>
+</html>
+
 
 
 
